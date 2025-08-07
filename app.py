@@ -16,31 +16,38 @@ calendar_order = [
     "july", "august", "september", "october", "november", "december"
 ]
 
-def get_output_folder(month: str, data_type: str, table_number: str):
+def get_output_folder(image_folder: str, table: str):
 
     """
     Returns the directory path where segmented table images should be stored,
     creating it if it does not exist. Falls back to 'miscellaneous' if month or type are missing.
     """
 
-    if not month or not data_type:
-        base = os.path.join(OUTPUT_ROOT, "miscellaneous", f"table_{table_number}")
-    else:
-        base = os.path.join(OUTPUT_ROOT, month, data_type, f"table_{table_number}")
+    # if not month or not data_type:
+    #     base = os.path.join(OUTPUT_ROOT, "miscellaneous", f"table_{table_number}")
+    # else:
+    #     base = os.path.join(OUTPUT_ROOT, month, data_type, f"table_{table_number}")
+    # os.makedirs(base, exist_ok=True)
+    # return base
+
+    base = os.path.join(OUTPUT_ROOT, image_folder, table)
     os.makedirs(base, exist_ok=True)
     return base
 
-def get_csv_output_folder(month: str, data_type: str):
+def get_csv_output_folder(image_folder: str):
 
     """
     Returns the directory path where OCR CSV outputs should be stored,
     creating it if it does not exist. Falls back to 'miscellaneous/csv_output' if month or type are missing.
     """
 
-    if not month or not data_type:
-        base = os.path.join(OUTPUT_ROOT, "miscellaneous", "csv_output")
-    else:
-        base = os.path.join(OUTPUT_ROOT, month, data_type, "csv_output")
+    # if not month or not data_type:
+    #     base = os.path.join(OUTPUT_ROOT, "miscellaneous", "csv_output")
+    # else:
+    #     base = os.path.join(OUTPUT_ROOT, month, data_type, "csv_output")
+    # os.makedirs(base, exist_ok=True)
+    # return base
+    base = os.path.join(OUTPUT_ROOT, image_folder, "csv_outputs")
     os.makedirs(base, exist_ok=True)
     return base
 
@@ -101,39 +108,17 @@ class OCRAppGUI:
         self.build_gui()
 
     def build_gui(self):
-
         """
         Constructs the full GUI with input fields, dropdowns, and buttons for all major actions.
         """
-        #month dropdown
-        tk.Label(self.root, text="Select Month:").pack(pady=5)
-        month_options = [m for m in calendar_order if os.path.isdir(os.path.join(INPUT_ROOT, m))]
-        self.month_menu = ttk.Combobox(self.root, textvariable=self.month, values=month_options)
-        self.month_menu.pack()
-
-        #data type dropdown
-        tk.Label(self.root, text="Select Type (max, min, or precipitation):").pack(pady=5)
-        self.type_menu = ttk.Combobox(self.root, textvariable=self.data_type, values=["max", "min", "precipitation"])
-
-        self.type_menu.pack()
-
-        #table selection
-        tk.Button(self.root, text="Choose Table Image", command=self.select_table_file).pack(pady=5)
+         # Remove dropdowns, just a button to select the table image
+        tk.Button(self.root, text="Choose Table Image", command=self.select_table_file).pack(pady=20)
         self.file_label = tk.Label(self.root, text="No file selected")
         self.file_label.pack()
 
-        #enter table number (important for file management)
-        tk.Label(self.root, text="Enter Table Number:").pack(pady=5)
-        self.num_entry = tk.Entry(self.root, textvariable=self.table_number)
-        self.num_entry.pack()
-
-        #launch segmentation
         tk.Button(self.root, text="Start Segmentation", command=self.run_segmentation).pack(pady=8)
         tk.Button(self.root, text="Run OCR", command=self.run_ocr).pack(pady=4)
         tk.Button(self.root, text="Launch Error Checker", command=self.launch_checker).pack(pady=4)
-
-        # tk.Button(self.root, text="Manual Input", command=self.launch_manual_input).pack(pady=4)
-
 
     def select_table_file(self):
 
@@ -142,17 +127,35 @@ class OCRAppGUI:
         Updates the UI label and internal path variable when a file is selected.
         """
 
-        init_dir = os.path.join(INPUT_ROOT, self.month.get(), self.data_type.get()) \
-            if self.month.get() and self.data_type.get() else INPUT_ROOT
+        # init_dir = os.path.join(INPUT_ROOT, self.month.get(), self.data_type.get()) \
+        #     if self.month.get() and self.data_type.get() else INPUT_ROOT
+
+        # filepath = filedialog.askopenfilename(
+        #     initialdir=init_dir,
+        #     title="Select Table Image",
+        #     filetypes=(("Image Files", "*.png;*.jpg;*.jpeg"),)
+        # )
+        # if filepath:
+        #     self.table_file.set(filepath)
+        #     self.file_label.config(text=os.path.basename(filepath))
 
         filepath = filedialog.askopenfilename(
-            initialdir=init_dir,
+            initialdir=INPUT_ROOT,
             title="Select Table Image",
             filetypes=(("Image Files", "*.png;*.jpg;*.jpeg"),)
         )
         if filepath:
             self.table_file.set(filepath)
             self.file_label.config(text=os.path.basename(filepath))
+            # Set image_folder and table based on the path
+            rel_path = os.path.relpath(filepath, INPUT_ROOT)
+            parts = rel_path.split(os.sep)
+            if len(parts) >= 2:
+                self.image_folder = parts[0]
+                self.table = parts[1]
+            else:
+                self.image_folder = ""
+                self.table = ""
 
     def run_segmentation(self):
 
@@ -162,16 +165,34 @@ class OCRAppGUI:
         Sharpens all output images post-segmentation.
         """
 
+        # if not self.table_file.get():
+        #     messagebox.showerror("Missing info", "Please select a table image.")
+        #     return
+
+        # out_dir = get_output_folder(self.month.get(), self.data_type.get(), self.table_number.get())
+
+        # if os.path.exists(out_dir) and os.listdir(out_dir):
+        #     overwrite = messagebox.askyesno(
+        #         "Overwrite Existing Segmentation?",
+        #         f"A segmented output already exists for Table {self.table_number.get()}.",
+        #     )
+        #     if not overwrite:
+        #         return
+
+        # start_segmentation(self.table_file.get(), out_dir)
+        # sharpen_segmented_images(out_dir)
+        # messagebox.showinfo("Segmentation Complete", f"Segmentation and sharpening saved to:\n{out_dir}")
+
         if not self.table_file.get():
             messagebox.showerror("Missing info", "Please select a table image.")
             return
 
-        out_dir = get_output_folder(self.month.get(), self.data_type.get(), self.table_number.get())
-
+        # Use self.image_folder and self.table set by select_table_file
+        out_dir = get_output_folder(self.image_folder, self.table)
         if os.path.exists(out_dir) and os.listdir(out_dir):
             overwrite = messagebox.askyesno(
                 "Overwrite Existing Segmentation?",
-                f"A segmented output already exists for Table {self.table_number.get()}.",
+                f"A segmented output already exists for Table {self.table} in {self.image_folder}.",
             )
             if not overwrite:
                 return
@@ -179,7 +200,6 @@ class OCRAppGUI:
         start_segmentation(self.table_file.get(), out_dir)
         sharpen_segmented_images(out_dir)
         messagebox.showinfo("Segmentation Complete", f"Segmentation and sharpening saved to:\n{out_dir}")
-
     def run_ocr(self):
 
         """
@@ -187,20 +207,32 @@ class OCRAppGUI:
         Saves output as CSV in the appropriate folder.
         """
 
-        if not self.table_number.get():
-            messagebox.showerror("Missing info", "Please enter a table number.")
+        # if not self.table_number.get():
+        #     messagebox.showerror("Missing info", "Please enter a table number.")
+        #     return
+
+        # segment_path = get_output_folder(self.month.get(), self.data_type.get(), self.table_number.get())
+        # csv_out = get_csv_output_folder(self.month.get(), self.data_type.get())
+        # messagebox.showinfo("Running OCR", f"Hang Tight! This might take a couple minutes!")
+        # run_ocr_on_table(
+        #     segment_path, csv_out,
+        #     self.month.get() or "miscellaneous",
+        #     self.data_type.get() or "miscellaneous",
+        #     self.table_number.get()
+        # )
+
+        if not self.table:
+            messagebox.showerror("Missing info", "Please select a table.")
             return
 
-        segment_path = get_output_folder(self.month.get(), self.data_type.get(), self.table_number.get())
-        csv_out = get_csv_output_folder(self.month.get(), self.data_type.get())
+        segment_path = get_output_folder(self.image_folder, self.table)
+        csv_out = get_csv_output_folder(self.image_folder)
         messagebox.showinfo("Running OCR", f"Hang Tight! This might take a couple minutes!")
         run_ocr_on_table(
             segment_path, csv_out,
-            self.month.get() or "miscellaneous",
-            self.data_type.get() or "miscellaneous",
-            self.table_number.get()
+            self.image_folder,
+            self.table
         )
-
     def launch_checker(self):
 
         """
