@@ -195,3 +195,36 @@ def test_load_cell(monkeypatch, tmp_path):
     gui.load_cell("another_value")
     gui.image_panel.configure.assert_called_with(image="imgtk")
     assert gui.image_panel.image == "imgtk"
+
+
+
+def test_min_max_std_validation():
+    """Test min, max, and std validation in OCRCheckerGUI."""
+    gui = OCRCheckerGUI.__new__(OCRCheckerGUI)
+    # Mock Tkinter variables
+    gui.use_min_max = mock.Mock()
+    gui.min_val = mock.Mock()
+    gui.max_val = mock.Mock()
+    gui.std_thresh = mock.Mock()
+
+    # Set up values
+    gui.use_min_max.get.return_value = True
+    gui.min_val.get.return_value = "10"
+    gui.max_val.get.return_value = "20"
+    gui.std_thresh.get.return_value = "2"
+
+    # Values for std calculation
+    values_list = ["12", "14", "16", "18"]
+
+    # Test value within min/max and std
+    assert gui.validate_value("15", values_list) is True
+
+    # Test value below min
+    assert gui.validate_value("9", values_list) is False
+
+    # Test value above max
+    assert gui.validate_value("21", values_list) is False
+
+    # Test value outside std threshold
+    gui.std_thresh.get.return_value = "0.1"  # Very strict
+    assert gui.validate_value("18", values_list) is False

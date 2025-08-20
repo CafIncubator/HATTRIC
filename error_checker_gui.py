@@ -22,6 +22,13 @@ class OCRCheckerGUI:
         self.outlier_indices = set()
         self.checking_outliers = False
 
+        # Default values for min/max/std
+        self.use_min_max = tk.BooleanVar(value=False)
+        self.use_std = tk.BooleanVar(value=False)
+        self.min_val = tk.StringVar(value="-50")
+        self.max_val = tk.StringVar(value="99")
+        self.std_thresh = tk.StringVar(value="2")
+
         self.create_widgets()
         self.master.bind('<Return>', self.handle_enter_key)
 
@@ -64,6 +71,20 @@ class OCRCheckerGUI:
         self.ignore_nan_var = tk.BooleanVar()
         tk.Checkbutton(control_frame, text="Ignore 'NaN' Values", variable=self.ignore_nan_var).pack(pady=5)
         tk.Button(control_frame, text="Save Now", command=self.save_csv, width=25).pack(pady=(0, 10))
+
+        # Add min/max/std controls below Save Now
+        validation_frame = tk.Frame(control_frame)
+        validation_frame.pack(pady=(5, 0), anchor="w")
+
+        tk.Checkbutton(validation_frame, text="Enable Min/Max Check", variable=self.use_min_max).grid(row=0, column=0, sticky="w")
+        tk.Label(validation_frame, text="Min:").grid(row=0, column=1)
+        tk.Entry(validation_frame, textvariable=self.min_val, width=6).grid(row=0, column=2)
+        tk.Label(validation_frame, text="Max:").grid(row=0, column=3)
+        tk.Entry(validation_frame, textvariable=self.max_val, width=6).grid(row=0, column=4)
+
+        tk.Checkbutton(validation_frame, text="Enable Std Dev Outlier Check", variable=self.use_std).grid(row=1, column=0, sticky="w")
+        tk.Label(validation_frame, text="Std Threshold:").grid(row=1, column=1)
+        tk.Entry(validation_frame, textvariable=self.std_thresh, width=6).grid(row=1, column=2)
 
         # Right column: text frame with scrollbars
         right_column = tk.Frame(content_frame)
@@ -155,17 +176,24 @@ class OCRCheckerGUI:
         if value.lower() == "nan" and self.ignore_nan_var.get():
             return False
         try:
-            if is_first_col:
-                num = int(value)
-                return not (1850 <= num <= 2025)
+            num = float(value)
+            if self.use_min_max.get():
+                min_v = float(self.min_val.get())
+                max_v = float(self.max_val.get())
+                return not (min_v <= num <= max_v)
             else:
-                num = float(value)
                 return not (-50 <= num <= 99)
         except ValueError:
             return True
 
     def find_outliers(self):
         self.outlier_indices.clear()
+        if not self.use_std.get():
+            return  # Skip outlier detection if not enabled
+        try:
+            std_thresh = float(self.std_thresh.get())
+        except Exception:
+            std_thresh = 2
         for col in range(1, self.current_csv.shape[1]):
             try:
                 col_values = pd.to_numeric(self.current_csv.iloc[:, col], errors='coerce')
@@ -175,7 +203,7 @@ class OCRCheckerGUI:
                     std = valid_vals.std()
                     for row in range(len(col_values)):
                         val = col_values.iat[row]
-                        if pd.notna(val) and abs(val - mean) > 2 * std:
+                        if pd.notna(val) and abs(val - mean) > std_thresh * std:
                             self.outlier_indices.add((row, col))
             except Exception:
                 continue
@@ -218,7 +246,7 @@ class OCRCheckerGUI:
         self.update_csv_display()
 
         img_path = os.path.join(self.table_path, f"row_{self.row_idx+1}", f"col_{self.col_idx+1}.png")
-        if os.path.exists(img_path):
+        if (os.path.exists(img_path)):
             img = cv2.imread(img_path)
             img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
             img = cv2.resize(img, (300, 300))
@@ -305,6 +333,27 @@ class OCRCheckerGUI:
             self.load_cell(self.current_csv.iat[self.row_idx, self.col_idx])
         except Exception as e:
             print("Click parse error:", e)
+
+    def validate_value(self, value, values_list):
+        """Validate value against min, max, and std thresholds."""
+        try:
+            val = float(value)
+        except ValueError:
+            return False
+        if self.use_min_max.get():
+            min_v = float(self.min_val.get())
+            max_v = float(self.max_val.get())
+            if val < min_v or val > max_v:
+                return False
+        if self.std_thresh.get():
+            arr = [float(v) for v in values_list if v not in ("", "NaN")]
+            if arr:
+                mean = sum(arr) / len(arr)
+                std = (sum((x - mean) ** 2 for x in arr) / len(arr)) ** 0.5
+                thresh = float(self.std_thresh.get())
+                if abs(val - mean) > thresh * std:
+                    return False
+        return True
 
 if __name__ == "__main__":
     root = tk.Tk()
