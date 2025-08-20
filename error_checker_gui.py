@@ -11,7 +11,7 @@ BASE_DIR = "output"
 class OCRCheckerGUI:
     def __init__(self, master):
         self.master = master
-        master.title("OCR Table Validator")
+        master.title("HATTRIC - OCR Table Validator")
 
         self.csv_path = ""
         self.image_folder = ""

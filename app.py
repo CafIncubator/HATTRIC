@@ -97,8 +97,8 @@ class OCRAppGUI:
         """
 
         self.root = root
-        root.title("OCR Table Pipeline")
-        root.geometry("500x400")
+        root.title("HATTRIC")
+        root.geometry("300x250")
 
         self.month = tk.StringVar()
         self.data_type = tk.StringVar()
