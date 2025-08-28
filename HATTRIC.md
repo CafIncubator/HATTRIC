@@ -45,7 +45,8 @@ Users launch the error checker via a dedicated button, opening a new window to s
 # Acknowledgements
 
 This research was a contribution from the Long-Term Agroecosystem Research (LTAR) network. LTAR is supported by the United States Department of Agriculture.
-"""
+
+
 
 
 
