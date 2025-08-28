@@ -1,4 +1,4 @@
-# OCRpipeline
+# Handwritten Analog Tabular Text-Recognition and Input Checker (HATTRIC)
 This project is a user-guided OCR pipeline designed for extracting structured data from scanned, handwritten tables. It is especially effective for digitizing legacy documents such as agricultural logs, historical field notebooks, or other analog forms where automated OCR tools typically fail.
 
 ## Features
