@@ -71,4 +71,14 @@ Fully automatic OCR solutions often fail on poorly scanned, handwritten, or skew
 ![Segment Grid](documentation/grid_columns.PNG)
 
 ### Validator
+
+The **HATTRIC Validator** is an interactive tool for reviewing and correcting OCR output:
+
+- **Side-by-side preview**: View each extracted cell alongside the original image snippet.
+- **Interactive editing**: Click on any value in the CSV pane to update it in real time.
+- **Smart navigation**: Define `Min`/`Max` bounds or a standard deviation (`Std Threshold`) to automatically jump to values that fall outside expected ranges.
+- **Precision tools**: Use features like `Ignore NaN`, `Add Decimal Prefix`, or `Go to Cell` for efficient cleanup.
+- **Instant feedback**: Confirm, empty, or save changes with one click.
+
+This tool ensures high accuracy for noisy or historic handwritten tables where OCR may struggle.
 ![valid GUI](documentation/error_check.PNG)
