@@ -1,0 +1,44 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the following metadata."
+title: "HATTRIC: Handwritten Analog Table Recognition and Input Checker"
+version: 1.0.0
+date-released: 2025-08-28
+authors:
+  - family-names: Steiner
+    given-names: Eddie
+    affiliation: Department of Crop and Soil Sciences, Washington State University, Pullman, Washington, USA
+  - family-names: Carlson
+    given-names: Bryan
+    affiliation: US Department of Agriculture–Agricultural Research Service, Northwest Sustainable Agroecosystems Research Unit, Pullman, Washington, USA
+license: MIT
+repository-code: https://github.com/eddsteiner/HATTRIC
+keywords:
+  - OCR
+  - Computer Vision
+  - Segmentation
+  - Google Cloud Vision
+  - Python
+  - Data Science
+type: software
+references:
+  - type: article
+    authors:
+      - family-names: Harris
+        given-names: Charles R
+      - family-names: Millman
+        given-names: K Jarrod
+      - family-names: van der Walt
+        given-names: Stéfan J
+    title: "Array programming with NumPy"
+    journal: "Nature"
+    year: 2020
+    volume: 585
+    pages: "357–362"
+    doi: 10.1038/s41586-020-2649-2
+  - type: article
+    authors:
+      - family-names: McKinney
+        given-names: Wes
+    title: "Data Structures for Statistical Computing in Python"
+    journal: "Proceedings of the 9th Python in Science Conference"
+    year: 2010
