@@ -27,7 +27,11 @@ pip install -r requirements.txt
 
 Place your `.json` key file from google cloud console in the `key/` folder. The application will automatically find and use it.
 
-### 2. Launch the Application
+### 2. Add Input Tables
+
+Place your scanned handwritten tables (image files like `.png`, `.jpg`, or `.tiff`) in the `input_tables/` folder. These will be used during the segmentation step.
+
+### 3. Launch the Application
 
 ```bash
 python app.py
