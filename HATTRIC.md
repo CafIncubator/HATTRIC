@@ -1,7 +1,3 @@
-from pathlib import Path
-import zipfile
-
-# Define file contents
 
 HATTRIC_MD = """---
 title: 'Handwritten Analog Tabular Text-Recognition and Input Checker (HATTRIC) Pipeline'
@@ -51,4 +47,5 @@ Users launch the error checker via a dedicated button, opening a new window to s
 
 This research was a contribution from the Long-Term Agroecosystem Research (LTAR) network. LTAR is supported by the United States Department of Agriculture.
 """
+
 
