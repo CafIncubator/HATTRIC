@@ -32,6 +32,11 @@ Place your `.json` key file from google cloud console in the `key/` folder. The 
 ```bash
 python app.py
 ```
+### If you don't have a Google Vision key and just want to try the interface using sample output:
+
+```bash
+python demo.py
+```
 
 ## Why Manual Segmentation?
 
