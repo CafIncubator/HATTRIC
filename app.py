@@ -228,11 +228,21 @@ class OCRAppGUI:
         segment_path = get_output_folder(self.image_folder, self.table)
         csv_out = get_csv_output_folder(self.image_folder)
         messagebox.showinfo("Running OCR", f"Hang Tight! This might take a couple minutes!")
-        run_ocr_on_table(
-            segment_path, csv_out,
-            self.image_folder,
-            self.table
-        )
+        try:
+            run_ocr_on_table(
+                segment_path, csv_out,
+                self.image_folder,
+                self.table
+            )
+        except Exception as e:
+            messagebox.showerror(
+                "OCR Error",
+                (
+                    "OCR could not start. If you're using Google Cloud Vision, make sure your service account JSON key is placed in the 'key' folder or set the GOOGLE_APPLICATION_CREDENTIALS environment variable.\n\n"
+                    f"Details: {e}"
+                )
+            )
+
     def launch_checker(self):
 
         """
@@ -245,28 +255,7 @@ class OCRAppGUI:
         except Exception as e:
             messagebox.showerror("Error", f"Could not launch error checker: {e}")
 
-    #MIGHT IMPLEMENT LATER
-    # def launch_manual_input(self):
-    #     if not self.table_number.get():
-    #         messagebox.showerror("Missing info", "Please enter a table number.")
-    #         return
-
-        # dtype_folder = {
-        #     "precipitation": "precipitation",
-        #     "max": "max",
-        #     "min": "min"
-        # }.get(self.data_type.get().lower(), self.data_type.get().lower())
-
-        # try:
-        #     import subprocess
-        #     subprocess.Popen([
-        #         "python", "manual_input_gui.py",
-        #         self.month.get() or "miscellaneous",
-        #         dtype_folder,
-        #         self.table_number.get()
-        #     ])
-        # except Exception as e:
-        #     messagebox.showerror("Error", f"Could not launch manual input GUI: {e}")
+    
 
 
 if __name__ == "__main__":
