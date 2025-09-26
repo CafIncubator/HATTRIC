@@ -10,6 +10,7 @@ authors:
     orcid: 0009-0008-0699-3062
     affiliation: 1
   - name: Bryan Robert Carlson
+    orcid: 0000-0002-9098-356X
     affiliation: 2
 affiliations:
   - name: Department of Crop and Soil Sciences, Washington State University, Pullman, Washington, USA
