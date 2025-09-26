@@ -7,6 +7,7 @@ tags:
   - digitization
 authors:
   - name: Eduard Faisal Steiner
+    orcid: 0009-0008-0699-3062
     affiliation: 1
   - name: Bryan Robert Carlson
     affiliation: 2
