@@ -1,5 +1,10 @@
 ---
 title: 'Handwritten Analog Tabular Text-Recognition and Input Checker (HATTRIC) Pipeline'
+tags:
+  - OCR
+  - Python
+  - character recognition
+  - digitization
 authors:
   - name: Eduard Faisal Steiner
     affiliation: 1
@@ -10,7 +15,7 @@ affiliations:
     index: 1
   - name: US Department of Agriculture–Agricultural Research Service, Northwest Sustainable Agroecosystems Research Unit, Pullman, Washington, USA
     index: 2
-date: 2025-08-28
+date: 2025-09-26
 bibliography: paper.bib
 ---
 
